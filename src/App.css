@@ -1,0 +1,49 @@
+.gradient {
+  background: linear-gradient(to right, rgba(209, 206, 241, 1), rgba(255, 255, 255, 1), rgba(207, 250, 247, 1));
+  padding: 2vw; 
+
+}
+
+.gradient h1 {
+  color: rgba(48, 51, 99, 1);
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 48px;
+
+}
+
+.gradient p{
+  color: rgba(48, 51, 99, 1);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+  margin-bottom: 8vh;
+  
+  }
+  .headings{
+    margin-top: 4vh;
+    margin-bottom: 4vh;
+  }
+  .headings h4{
+    color: rgba(48, 51, 99, 1);
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 53px;
+  }
+  .headings span{
+    color:rgba(48, 51, 99, 0.5);
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 53px;
+  }
+
+  .moving-section{
+    padding: 10px;
+    display: flex;
+    width:350px;
+    height:200px ;
+    border: 2px solid rgba(168, 168, 168, 1) ;
+    border-radius: 8px;
+    flex-wrap: "nowrap";
+    margin-bottom: 20px;
+  }
