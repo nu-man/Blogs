@@ -1,18 +1,17 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AllBlogs from "./pages/AllBlogs";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import AllBlogs from "./pages/AllBlogs"; // Import the AllBlogs component
 import SingleBlog from "./pages/SingleBlog";
 
-
-function App() {
+const App = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<AllBlogs/>}/>
-        <Route path="/blog" element={<SingleBlog/>}/>
+        <Route path="/" element={<AllBlogs />} /> {/* Route to AllBlogs */}
+        <Route path="/blog/:id" element={<SingleBlog />} /> {/* Route to individual blog */}
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;

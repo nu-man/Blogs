@@ -20,6 +20,8 @@
   margin-bottom: 8vh;
   
   }
+
+  
   .headings{
     margin-top: 4vh;
     margin-bottom: 4vh;
@@ -40,10 +42,20 @@
   .moving-section{
     padding: 10px;
     display: flex;
-    width:350px;
-    height:200px ;
+   
     border: 2px solid rgba(168, 168, 168, 1) ;
     border-radius: 8px;
     flex-wrap: "nowrap";
     margin-bottom: 20px;
+  }
+
+  .moving-section-2{
+    padding: 10px;
+    display: flex;
+   height: 200px;
+    border: 2px solid rgba(168, 168, 168, 1) ;
+    border-radius: 8px;
+    flex-wrap: "nowrap";
+    margin-bottom: 20px;
+    
   }
