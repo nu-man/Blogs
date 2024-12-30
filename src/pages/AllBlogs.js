@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import "../App.css";
 
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const scrollRef = useRef();
-  const navigate = useNavigate(); // Hook to programmatically navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -24,333 +26,207 @@ const AllBlogs = () => {
     fetchBlogs();
   }, []);
 
-  const scrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
-  };
-
   const handleBlogClick = (blogId) => {
-    // Navigate to the blog details page
     navigate(`/blog/${blogId}`);
   };
 
+  const sliderRef = useRef();
+
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({
+        left: -500, // Scroll amount
+        behavior: "smooth", // Smooth scrolling
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({
+        left: 500, // Scroll amount
+        behavior: "smooth", // Smooth scrolling
+      });
+    }
+  };
   return (
-    <>
+    <div className="all-blogs">
+      {/* Section 1 */}
       <div className="gradient">
-        <center>
+        <center style={{ marginBottom: "5.5rem" }}>
           <h1>Welcome to our Blog</h1>
           <p>Explore insights, tips, and stories about studying abroad.</p>
         </center>
-        <Container>
-          {blogs.length >= 4 ? (
-            <Row>
-              {[
-                { index: 0, height: "620px", lg: 4 },
-                { index: 1, height: "305px", lg: 4, double: true },
-                { index: 3, height: "620px", lg: 4 },
-              ].map((config, colIndex) => (
-                <Col lg={config.lg} key={colIndex}>
-                  {config.double ? (
-                    <>
-                      {blogs
-                        .slice(config.index, config.index + 2)
-                        .map((blog, i) => (
-                          <img
-                            key={i}
-                            src={blog?.coverImageSrc}
-                            alt={`Cover of blog titled ${blog?.title}`}
-                            style={{
-                              width: "100%",
-                              height: config.height,
-                              borderRadius: "8px",
-                              objectFit: "fill",
-                              marginBottom: i === 0 ? "10px" : "0",
-                            }}
-                            onClick={() => handleBlogClick(blog._id)} // Add onClick handler
-                          />
-                        ))}
-                    </>
+        <div>
+          {blogs?.length >= 4 ? (
+            <Grid container spacing={2}>
+              {[0, 1, 3].map((index, colIndex) => (
+                <Grid item xs={12} sm={6} md={4} lg={4} key={colIndex}>
+                  {index === 1 ? (
+                    blogs
+                      .slice(index, index + 2)
+                      .map((blog, i) => (
+                        <img
+                          key={i}
+                          src={blog?.coverImageSrc}
+                          alt={`Cover of blog titled ${blog?.title}`}
+                          loading="lazy"
+                          className={
+                            i === 0 ? "small-blog margin-bottom" : "small-blog"
+                          }
+                          onClick={() => handleBlogClick(blog?._id)}
+                        />
+                      ))
                   ) : (
                     <img
-                      key={config.index}
-                      src={blogs[config.index]?.coverImageSrc}
-                      alt={`Cover of blog titled ${blogs[config.index]?.title}`}
-                      style={{
-                        width: "100%",
-                        height: config.height,
-                        borderRadius: "8px",
-                        marginBottom: colIndex === 2 ? "3vh" : "0",
-                      }}
-                      onClick={() => handleBlogClick(blogs[config.index]?._id)} // Add onClick handler
+                      src={blogs[index]?.coverImageSrc}
+                      alt={`Cover of blog titled ${blogs[index]?.title}`}
+                      loading="lazy"
+                      className="large-blog"
+                      onClick={() => handleBlogClick(blogs[index]?._id)}
                     />
                   )}
-                </Col>
+                </Grid>
               ))}
-            </Row>
+            </Grid>
+          ) : blogs.length === 0 ? (
+            <div className="loading-section">
+              <CircularProgress />
+              <p>Loading blogs...</p>
+            </div>
           ) : (
-            <p>Loading blogs...</p>
+            <p>No blogs available at the moment. Please check back later.</p>
           )}
-        </Container>
+        </div>
       </div>
 
-      <Container>
-        {/* Most viewed blogs section */}
+      {/* Section 2 */}
+      <div className="section-2">
         <div className="headings">
-          <h4>
+          <h2>
             Most viewed <span>Blogs</span>
-          </h4>
+          </h2>
         </div>
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {/* Left Arrow */}
-          <button
+        <div className="moving-cards">
+          <KeyboardArrowLeftIcon
             onClick={scrollLeft}
-            style={{
-              position: "absolute",
-              left: "-10px",
-              zIndex: 10,
-              background: "none",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              color: "#333",
-            }}
-          >
-            &#8592;
-          </button>
+            style={{ cursor: "pointer" }}
+          />
 
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              overflowX: "auto",
-              flexWrap: "nowrap",
-              scrollbarWidth: "none", // Firefox
-              msOverflowStyle: "none", // IE and Edge
-              scrollBehavior: "smooth",
-            }}
-            ref={scrollRef}
-          >
-            {/* Hide scrollbar for Webkit browsers */}
-            <style>
-              {`
-                div::-webkit-scrollbar {
-                  display: none;
-                }
-              `}
-            </style>
-            <Row>
-              {blogs.slice(5, 8).map((blog, _id) => (
-                <Col key={_id}>
-                  <div
-                    className="moving-section"
-                    onClick={() => handleBlogClick(blog._id)} // Add onClick handler
-                    style={{ cursor: "pointer" }}
-                  >
+          <div className="blog-slider" ref={sliderRef}>
+            <Grid container spacing={2}>
+              {blogs.slice(5, 8).map((blog) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  key={blog._id}
+                  onClick={() => handleBlogClick(blog._id)}
+                >
+                  <div className="blog-card">
                     <img
                       src={blog.coverImageSrc}
-                      alt="img"
-                      style={{
-                        height: "100px",
-                        width: "100px",
-                        borderRadius: "8px",
-                      }}
+                      alt={`Cover of blog titled ${blog.title}`}
+                      className="blog-image"
                     />
-                    <p
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        lineHeight: "15px",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {blog.title} <br />
-                      <br />
-                      <span
-                        style={{
-                          fontSize: "10px",
-                          fontWeight: "400",
-                          lineHeight: "12px",
-                        }}
-                      >
+                    <div className="blog-content">
+                      <h3 className="blog-title">
+                        {blog.title.slice(0, 30)}...
+                      </h3>
+                      <p className="blog-summary">
                         {blog.summary?.slice(0, 70)}...
-                      </span>
-                    </p>
+                      </p>
+                    </div>
                   </div>
-                </Col>
+                </Grid>
               ))}
-            </Row>
+            </Grid>
           </div>
 
-          {/* Right Arrow */}
-          <button
+          <KeyboardArrowRightIcon
             onClick={scrollRight}
-            style={{
-              position: "absolute",
-              right: "-10px",
-              zIndex: 10,
-              background: "none",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              color: "#333",
-            }}
-          >
-            &#8594;
-          </button>
+            style={{ cursor: "pointer" }}
+          />
         </div>
+      </div>
 
-        {/* What new today section */}
-        <div>
-          <div className="headings">
-            <h4>
-              What new <span>today</span>
-            </h4>
-          </div>
-          <Row>
-            {[
-              { index: 0, count: 1, height: "660px", lg: 4 },
-              { index: 1, count: 3, lg: 4, triple: true },
-              { index: 4, count: 1, height: "660px", lg: 4 },
-            ].map((config, colIndex) => (
-              <Col lg={config.lg} key={colIndex}>
-                {config.triple ? (
-                  blogs
-                    .slice(config.index, config.index + config.count)
-                    .map((blog, _id) => (
-                      <div
-                        className="moving-section-2"
-                        key={_id}
-                        onClick={() => handleBlogClick(blog._id)} // Add onClick handler
-                        style={{ cursor: "pointer", marginBottom: "20px" }}
-                      >
-                        <img
-                          src={blog.coverImageSrc}
-                          alt={`Cover of blog titled ${blog?.title}`}
-                          style={{
-                            height: "100px",
-                            width: "100px",
-                            borderRadius: "8px",
-                          }}
-                        />
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            lineHeight: "15px",
-                            marginLeft: "10px",
-                          }}
-                        >
-                          {blog.title} <br />
-                          <br />
-                          <span
-                            style={{
-                              fontSize: "10px",
-                              fontWeight: "400",
-                              lineHeight: "12px",
-                            }}
-                          >
-                            {blog.summary?.slice(0, 300)}...
-                          </span>
-                        </p>
-                      </div>
-                    ))
-                ) : (
-                  <img
-                    key={config.index}
-                    src={blogs[config.index]?.coverImageSrc}
-                    alt={`Cover of blog titled ${blogs[config.index]?.title}`}
-                    style={{
-                      width: "100%",
-                      height: config.height,
-                      borderRadius: "8px",
-                      marginBottom: colIndex === 2 ? "3vh" : "0",
-                    }}
-                    onClick={() => handleBlogClick(blogs[config.index]?._id)} // Add onClick handler
-                  />
-                )}
-              </Col>
-            ))}
-          </Row>
+      {/* Section 3 */}
+      <div className="section-3">
+        <div className="headings">
+          <h2>
+            What new <span>today</span>
+          </h2>
         </div>
-
-        {/* All Blogs Section */}
-        <div>
-          <div className="headings">
-            <h4>
-              All <span>Blogs</span>
-            </h4>
-          </div>
-          <Row>
-            {blogs.slice(13).map((blog, index) => (
-              <Col
-                lg={6}
-                md={6}
-                sm={12}
-                key={index}
-                style={{
-                  marginBottom: "20px",
-                }}
-              >
-                <div
+        <Grid container spacing={2} sx={{ marginTop: "20px" }}>
+          {[
+            { index: 0, count: 1, height: "600px", lg: 4 },
+            { index: 1, count: 3, lg: 4, triple: true },
+            { index: 4, count: 1, height: "600px", lg: 4 },
+          ].map((config, colIndex) => (
+            <Grid item lg={config.lg} md={6} sm={12} key={colIndex}>
+              {config.triple ? (
+                blogs
+                  .slice(config.index, config.index + config.count)
+                  .map((blog: any, _id: number) => (
+                    <div
+                      className="section-3-container"
+                      key={_id}
+                      onClick={() => handleBlogClick(blog?._id)} // Add onClick handler
+                    >
+                      <img
+                        src={blog?.coverImageSrc}
+                        alt={`Cover of blog titled ${blog?.title}`}
+                      />
+                      <h5>
+                        {blog?.title.slice(0, 25)}... <br />
+                        <br />
+                        <p>{blog?.summary?.slice(0, 150)}....</p>
+                      </h5>
+                    </div>
+                  ))
+              ) : (
+                <img
+                  key={config.index}
+                  src={blogs[config?.index]?.coverImageSrc}
+                  alt={`Cover of blog titled ${blogs[config?.index]?.title}`}
                   style={{
                     width: "100%",
-                    padding: "20px",
+                    height: config.height,
                     borderRadius: "8px",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                    backgroundColor:
-                      index % 2 === 0
-                        ? "rgba(240, 240, 255, 1)"
-                        : "rgba(255, 247, 233, 1)",
-                    cursor: "pointer", // Add the cursor style here
+                    marginBottom: colIndex === 2 ? "3vh" : "0",
                   }}
-                  onClick={() => handleBlogClick(blog._id)} // Add onClick handler
-                >
-                  <h4
-                    style={{
-                      fontWeight: 600,
-                      size: "32px",
-                      lineHeight: "42px",
-                    }}
-                  >
-                    {blog.title}
-                  </h4>
-                  <p
-                    style={{
-                      fontWeight: 400,
-                      size: "16px",
-                      lineHeight: "25px",
-                    }}
-                  >
-                    {blog.summary.slice(0, 120)}...
-                  </p>
-                  <h6
-                    style={{
-                      background: "rgba(48, 51, 99, 1)",
-                      width: "fit-content",
-                      color: "white",
-                      borderRadius: "10px",
-                      padding: "5px",
-                      margin: "20px",
-                    }}
-                  >
-                    View details
-                  </h6>
-                </div>
-              </Col>
-            ))}
-          </Row>
+                  onClick={() => handleBlogClick(blogs[config.index]?._id)} // Add onClick handler
+                />
+              )}
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+
+      {/*All Blogs Section*/}
+      <div className="all-blogs">
+        <div className="headings">
+          <h2>
+            All <span>Blogs</span>
+          </h2>
         </div>
-      </Container>
-    </>
+        <Grid container spacing={2} sx={{ marginTop: "20px" }}>
+          {blogs?.slice(13).map((blog: any, index: number) => (
+            <Grid item lg={6} md={6} sm={12} key={index}>
+              <div
+                className={`all-blogs-card ${index % 2 === 0 ? "even" : "odd"}`}
+                onClick={() => handleBlogClick(blog._id)}
+              >
+                <h4>{blog?.title.slice(0, 40)}...</h4>
+                <h5>{blog?.summary?.slice(0, 120)}...</h5>
+                <h6>View details</h6>
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </div>
   );
 };
 

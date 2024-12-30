@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom"; // To get the blog ID from the URL
-import { Row,Col, Container } from "react-bootstrap";
+import { Grid } from "@mui/material"; // MUI components for better styling
 
 const SingleBlog = () => {
   const { id } = useParams(); // Get the blog ID from the URL
-  const [blog, setBlog] = useState(null);
+  const [blog, setBlog] = useState();
   const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [error, setError] = useState(""); // Error state
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -35,53 +35,35 @@ const SingleBlog = () => {
   }
 
   return (
-    <Container>
-      <h1
-        style={{
-          fontWeight: 600,
-          fontSize: "48px",
-          lineHeight: "55px",
-          margin: "40px",
-          textAlign:"center",
-          color:"rgba(0, 0, 0, 1)"
-        }}
+    <div className="container">
+      <h1 className="title">{blog.title}</h1>
+      <div
+        className="grid-container"
+        style={{ margin: 0, padding: 0, boxSizing: "border-box" }}
       >
-        {blog.title}
-      </h1>
-
-     
-
-   <div className="d-flex">
-   <Row>
-    <Col
-     lg={8}>
-      <div>
-        {/* Render HTML content from the blog */}
-        <div
-          style={{
-            fontWeight: 400,
-            fontSize: "20px",
-            lineHeight: "30px",
-            color: "rgba(106, 106, 106, 1)",
-          }}
-          dangerouslySetInnerHTML={{ __html: blog.content }} // Safely render HTML
-        />
+        <Grid container spacing={2}>
+          <Grid item lg={8} md={6} className="grid-item">
+            <div>
+              {/* Render HTML content from the blog */}
+              <div
+                className="blog-content2"
+                dangerouslySetInnerHTML={{ __html: blog.content }} // Safely render HTML
+              />
+            </div>
+          </Grid>
+          <Grid item lg={4} md={4} className="grid-item">
+            {/* Check if cover image exists */}
+            {blog.coverImageSrc && (
+              <img
+                src={blog.coverImageSrc}
+                alt={`Cover for ${blog.title}`}
+                className="cover-image"
+              />
+            )}
+          </Grid>
+        </Grid>
       </div>
-       
-
-     </Col>
-     <Col lg={4}>
-     {/* Check if cover image exists */}
-     {blog.coverImageSrc && (
-        <img
-          src={blog.coverImageSrc}
-          alt={`Cover for ${blog.title}`}
-          style={{ width: "fit-content%", height: "auto", borderRadius: "8px"  }}
-        />
-      )}</Col>
-   </Row>
-   </div>
-    </Container>
+    </div>
   );
 };
 
